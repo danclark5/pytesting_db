@@ -4,13 +4,11 @@ import pyodbc
 @pytest.fixture(scope='module')
 def password():
     with open('pass.word') as f:
-        pw = f.readline()
-        print(pw)
+        pw = f.readline().strip()
     yield pw
 
 @pytest.fixture(scope='module')
 def cnxn(password):
-    print(password)
     cnxn = pyodbc.connect('DSN=bruisedthumb;UID=bruised;PWD={}'.format(password))
     yield cnxn
     cnxn.close()
