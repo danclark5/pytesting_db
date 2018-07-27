@@ -21,11 +21,20 @@ def cursor(cnxn):
     cnxn.rollback()
 
 @pytest.fixture
-def first_project(cursor):
+def birch_bookshelf_project(cursor):
     stmt = textwrap.dedent('''
     INSERT INTO projects(name, description)
     VALUES ('bookshelf', 'Building a bookshelf from birch plywood')
     ''')
     cursor.execute(stmt)
     stmt = 'SELECT @@IDENTITY'
-    yield cursor.execute(stmt).fetchval()
+    project_id = cursor.execute(stmt).fetchval()
+    stmt = textwrap.dedent('''
+    INSERT INTO project_supplies(project_id, name, quantity, unit_cost)
+    VALUES ({project_id}, 'Birch Plywood', 3, 48.50),
+           ({project_id}, 'Wood Glue', 1, 5.99),
+           ({project_id}, 'Screws', 2, 8.97),
+           ({project_id}, 'Stain', 1, 30.99)
+    ''')
+    cursor.execute(stmt.format(project_id = project_id))
+    yield project_id
