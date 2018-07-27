@@ -38,3 +38,23 @@ def birch_bookshelf_project(cursor):
     ''')
     cursor.execute(stmt.format(project_id = project_id))
     yield project_id
+
+@pytest.fixture
+def raised_garden_bed_project(cursor):
+    stmt = textwrap.dedent('''
+    INSERT INTO projects(name, description)
+    VALUES ('bookshelf', 'Assemble a raised garden bed')
+    ''')
+    cursor.execute(stmt)
+    stmt = 'SELECT @@IDENTITY'
+    project_id = cursor.execute(stmt).fetchval()
+    stmt = textwrap.dedent('''
+    INSERT INTO project_supplies(project_id, name, quantity, unit_cost)
+    VALUES ({project_id}, '4x4', 3, 3.75),
+           ({project_id}, '2x8', 8, 4.50),
+           ({project_id}, '2x4', 8, 2.50),
+           ({project_id}, 'Screws', 2, 8.97)
+    ''')
+    cursor.execute(stmt.format(project_id = project_id))
+    yield project_id
+
