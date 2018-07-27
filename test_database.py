@@ -1,3 +1,4 @@
+from decimal import Decimal
 def run_sproc(cursor, project_id):
     stmt = 'exec get_project_costs @project_id=?'
     cursor.execute(stmt, project_id)
@@ -20,7 +21,12 @@ def test_project_steps_table_exists(cursor):
 
 def test_get_project_costs(cursor, birch_bookshelf_project):
     cost = run_sproc(cursor, birch_bookshelf_project)
-    assert cost == 200.42 
+    assert cost == Decimal(200.42)
+
+def test_projects_and_supplies(cursor, raised_garden_bed_project, birch_bookshelf_project):
+    stmt = 'SELECT * from projects_and_supplies'
+    rs = cursor.execute(stmt).fetchall()
+    assert len(rs) == 8
 
     
 
