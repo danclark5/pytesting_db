@@ -19,6 +19,9 @@ CREATE TABLE project_steps (
     step_number VARCHAR(20) NOT NULL
 )
 
+drop PROCEDURE get_project_costs
+drop view projects_and_supplies
+
 CREATE PROCEDURE get_project_costs (
     @project_id INT
 )
@@ -26,6 +29,7 @@ AS (
     SELECT SUM(ps.quantity + ps.unit_cost)
     FROM projects p
     JOIN project_supplies ps on p.id = ps.project_id
+    WHERE p.id = @project_id
 )
 
 CREATE VIEW projects_and_supplies
